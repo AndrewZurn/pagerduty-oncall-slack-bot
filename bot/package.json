@@ -1,0 +1,22 @@
+{
+  "name": "pagerduty-oncall-slack-bot",
+  "version": "1.0.0",
+  "description": "A simple bot that provides a slash-command to access information on on-call engineers.",
+  "main": "bot.js",
+  "dependencies": {
+    "@google-cloud/secret-manager": "2.1.0",
+    "@pagerduty/pdjs": "^2.2.4",
+    "botbuilder-adapter-slack": "^1.0.8",
+    "botkit": "^4.6.2",
+    "request": "^2.88.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AndrewZurn/oncall-slack-bot.git"
+  },
+  "author": "Andrew Zurn",
+  "license": "MIT"
+}
