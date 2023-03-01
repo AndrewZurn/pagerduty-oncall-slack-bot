@@ -4,7 +4,14 @@ const { SecretManagerServiceClient } = require('@google-cloud/secret-manager')
 const { api } = require('@pagerduty/pdjs');
 
 const SCHEDULE_MAPPINGS = {
-  team: ['SCHEDULE_ID', 'EXAMPLE_P12345'],
+  api: ['PGOSKN1', 'P8TZINU'],
+  cams: ['PAG3G89', 'P2FGPRL'],
+  clarity: ['POUQYNJ', 'P8F2KSG'],
+  dap: ['PT18AAK'],
+  devops: ['P2WVSFU', 'PNBRGBP'],
+  incident_managers: ['P2MDXW9', 'PKOXF2X'],
+  noc: ['P2XSBME', 'PW68K6H', 'PZ41EH5'],
+  udp: ['PBGYDKJ'],
 }
 
 const HELP_MESSAGE = 'Please provide a team name for the oncall engineers you would like to lookup. ' +
