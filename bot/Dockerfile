@@ -12,16 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM node:12-slim
+FROM node:14-slim as builder
+WORKDIR /src
 
 # Install app dependencies.
-COPY package.json /src/package.json
-WORKDIR /src
+COPY package.json ./package.json
 RUN npm install
+
+FROM gcr.io/distroless/nodejs14
+WORKDIR /src
 
 # Bundle app source.
 COPY bot.js /src
+COPY --from=builder /src/node_modules /src/node_modules
 
 EXPOSE 8080
 
-CMD ["node", "bot"]
+CMD ["bot"]
