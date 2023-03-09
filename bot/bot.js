@@ -36,8 +36,9 @@ async function accessSecretVersion(name) {
 }
 
 async function handleSlackMessage(message, bot, pagerDuty) {
-  console.log("Message is: " + message);
-  let messageText = message.text ? message.text.toLowerCase : null;
+  console.log("'message' is: %s", message);
+  let messageText = message.text ? message.text.toLowerCase() : null;
+  console.log("'messageText' is: %s", messageText);
   if (!messageText || messageText.includes("help") || SCHEDULE_MAPPINGS[messageText] == null) {
     await bot.reply(message, HELP_MESSAGE);
   } else {
