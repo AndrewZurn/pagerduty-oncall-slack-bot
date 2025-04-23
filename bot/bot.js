@@ -4,8 +4,8 @@ const { SecretManagerServiceClient } = require('@google-cloud/secret-manager')
 const { api } = require('@pagerduty/pdjs');
 
 const SCHEDULE_MAPPINGS = {
-  team: ['SCHEDULE_ID', 'EXAMPLE_P12345'],
-}
+  team_name: { buisness: "321CBA", critical: ['ABC123'] },
+};
 
 const HELP_MESSAGE = 'Please provide a team name for the oncall engineers you would like to lookup. ' +
   'Example: `/oncall <team_name>` or `@oncall-bot <team_name>`. Allowed team names are: ' +
@@ -29,17 +29,16 @@ async function accessSecretVersion(name) {
 }
 
 async function handleSlackMessage(message, bot, pagerDuty) {
-  console.log("Message is: " + message);
-  let messageText = message.text ? message.text.toLowerCase : null;
+  // console.log("Message is:");
+  // console.log(message);
+  let messageText = message.text ? message.text.toLowerCase() : null;
   if (!messageText || messageText.includes("help") || SCHEDULE_MAPPINGS[messageText] == null) {
     await bot.reply(message, HELP_MESSAGE);
   } else {
-    let teamSchedules = SCHEDULE_MAPPINGS[message.text.toLowerCase()];
+    let teamSchedules = SCHEDULE_MAPPINGS[message.text.toLowerCase()].critical;
     let oncallEngineers = await Promise.all(
       teamSchedules.map(async (scheduleId, index) => {
-        let { data, resource } = await pagerDuty.get(`/oncalls?schedule_ids%5B%5D=${scheduleId}`);
-        console.log("PagerDuty Response is: " + JSON.stringify(resource));
-        let engineer = resource[0].user.summary;
+        let engineer = await getOncallEngineer(pagerDuty, scheduleId);
         console.log(`The engineer for ${scheduleId} is ${engineer}`);
 
         var position = "";
@@ -61,7 +60,27 @@ async function handleSlackMessage(message, bot, pagerDuty) {
       })
     );
 
+    let businessHoursSchedule = SCHEDULE_MAPPINGS[message.text.toLowerCase()].business;
+    if (businessHoursSchedule) {
+      // make the call to get the business hours engineer and add it to the front of the array
+      let businessHoursEngineer = await getOncallEngineer(pagerDuty, businessHoursSchedule);
+      console.log(`The business hours engineer for ${businessHoursSchedule} is ${businessHoursEngineer}`);
+      oncallEngineers.unshift(`*Business Hours*: ${businessHoursEngineer}`);
+    }
+
     await bot.reply(message, `*${message.text.toUpperCase()}* On Call Engineers - ${oncallEngineers.join(", ")}`);
+  }
+}
+
+async function getOncallEngineer(pagerDuty, scheduleId) {
+  let { _, resource } = await pagerDuty.get(`/oncalls?schedule_ids%5B%5D=${scheduleId}`);
+  console.log("PagerDuty Response is: " + JSON.stringify(resource));
+  if (resource.length == 0) {
+    console.log("No oncall engineer found for scheduleId: " + scheduleId);
+    return "Currently Off Duty";
+  } else {
+    console.log("Oncall engineer found for scheduleId: " + scheduleId);
+    return resource[0].user.summary;
   }
 }
 

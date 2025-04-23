@@ -16,8 +16,9 @@ FROM node:12-slim
 
 # Install app dependencies.
 COPY package.json /src/package.json
+COPY package-lock.json /src/package-lock.json
 WORKDIR /src
-RUN npm install
+RUN npm ci
 
 # Bundle app source.
 COPY bot.js /src
