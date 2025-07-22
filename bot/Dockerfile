@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM node:12-slim
+FROM node:22-slim
 
 # Install app dependencies.
 COPY package.json /src/package.json

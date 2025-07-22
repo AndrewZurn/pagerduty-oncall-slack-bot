@@ -4,7 +4,7 @@
   "description": "A simple bot that provides a slash-command to access information on on-call engineers.",
   "main": "bot.js",
   "dependencies": {
-    "@google-cloud/secret-manager": "2.1.0",
+    "@google-cloud/secret-manager": "6.1.0",
     "@pagerduty/pdjs": "^2.2.4",
     "botbuilder-adapter-slack": "^1.0.8",
     "botkit": "^4.6.2",
